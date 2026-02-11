@@ -1,5 +1,5 @@
-resource "azurerm_mssql_server_microsoft_support_auditing_policy" "mssql_server_microsoft_support_auditing_policys" {
-  for_each = var.mssql_server_microsoft_support_auditing_policys
+resource "azurerm_mssql_server_microsoft_support_auditing_policy" "mssql_server_microsoft_support_auditing_policies" {
+  for_each = var.mssql_server_microsoft_support_auditing_policies
 
   server_id                       = each.value.server_id
   blob_storage_endpoint           = each.value.blob_storage_endpoint
