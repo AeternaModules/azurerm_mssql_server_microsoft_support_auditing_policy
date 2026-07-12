@@ -1,3 +1,7 @@
+output "mssql_server_microsoft_support_auditing_policies_id" {
+  description = "Map of id values across all mssql_server_microsoft_support_auditing_policies, keyed the same as var.mssql_server_microsoft_support_auditing_policies"
+  value       = { for k, v in azurerm_mssql_server_microsoft_support_auditing_policy.mssql_server_microsoft_support_auditing_policies : k => v.id }
+}
 output "mssql_server_microsoft_support_auditing_policies_blob_storage_endpoint" {
   description = "Map of blob_storage_endpoint values across all mssql_server_microsoft_support_auditing_policies, keyed the same as var.mssql_server_microsoft_support_auditing_policies"
   value       = { for k, v in azurerm_mssql_server_microsoft_support_auditing_policy.mssql_server_microsoft_support_auditing_policies : k => v.blob_storage_endpoint }
