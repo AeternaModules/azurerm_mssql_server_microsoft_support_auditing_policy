@@ -27,21 +27,22 @@ EOT
     storage_account_subscription_id_key_vault_id          = optional(string)
     storage_account_subscription_id_key_vault_secret_name = optional(string)
   }))
-  # --- Unconfirmed validation candidates, derived from azurerm_mssql_server_microsoft_support_auditing_policy's provider source ---
-  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
-  # or a path that crosses a list-typed block (needs its own for_each wrapping).
-  # Review, translate into a real validation{} block above, and delete once confirmed.
-  # path: server_id
-  #   source:    [from validate.ServerID] !ok
-  # path: server_id
-  #   source:    [from validate.ServerID] err != nil
-  # path: blob_storage_endpoint
-  #   source:    validation.IsURLWithHTTPS(...) - no translation rule yet, add one
-  # path: storage_account_access_key
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: storage_account_subscription_id
-  #   condition: can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", value))
-  #   message:   must be a valid UUID
+  validation {
+    condition = alltrue([
+      for k, v in var.mssql_server_microsoft_support_auditing_policies : (
+        v.storage_account_access_key == null || (length(v.storage_account_access_key) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.mssql_server_microsoft_support_auditing_policies : (
+        v.storage_account_subscription_id == null || (can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", v.storage_account_subscription_id)))
+      )
+    ])
+    error_message = "must be a valid UUID"
+  }
+  # Note: 3 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
 }
 
